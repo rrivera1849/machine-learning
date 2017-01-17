@@ -51,3 +51,38 @@ Here, the term 1e-5 is just noise.
 This applies for any preprocessing statistic (e.g. the data mean).
 The mean should only be calculated on the training data set and then subtracted off the
 train/validation/test set.
+
+## Weight Initialization
+
+### Pitfall: All Zero Initialization
+If the network computes all the outputs to be the same then during backpropagation it will 
+compute the same gradient update for every parameter. This can be extended to "All Same Initialization".
+
+### Small Random Numbers
+Initialize the weights to small numbers from a Gaussian or Uniform distribution (doesn't make much difference).
+`W = 0.01 * np.randn (D, H)`
+
+Warning:
+Be careful with small numbers since the gradient updates are proportional to the weights these control de 
+gradient signal strength flowing backwards. This might be a concern for deeper networks.
+
+### Calibrating Variances with 1 / SQRT (n)
+A problem with the above is that the variance of the outputs grows with the number of the inputs.
+We can normalize the variance of each neurons output to 1 by scaling its weight vector by the 
+square root of fann-in (number of inputs).
+`w = np.random.randn (n) / sqrt (n)`
+Where n is the number of inputs, this means each output has approximately the same distribution 
+which **improves the rate of convergence**.
+
+### Spare Initialization
+Initialize all the weights to zero but break the symmetry by allowing every neuron to be **randomly connected** 
+with weights from a small gaussian to a fixed number of neurons below it. 
+
+TODO: Dropout Layer?
+
+### Biases
+They can all be zero since symmetry breaking is done by weights.
+
+### Batch Normalization
+Discussed in BN paper in directory, it is like doing preprocessing at every layer but 
+fully integratd into the network!
