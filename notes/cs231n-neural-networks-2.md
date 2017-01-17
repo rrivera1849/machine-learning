@@ -86,3 +86,29 @@ They can all be zero since symmetry breaking is done by weights.
 ### Batch Normalization
 Discussed in BN paper in directory, it is like doing preprocessing at every layer but 
 fully integratd into the network!
+
+## Regularization
+This is used to prevent overfitting.
+
+### L2 Regularization
+Penalize the squared magnitude of all parameters directly in the objective.
+For every 'w' add the term 1/2 * lambda * w^2, the 1/2 is just added so that 
+the derivative is lambda * w.
+
+This term prefers diffuse weight vectors, that is utilizing all of its inputs a little 
+bit instead of some of its inputs a lot.
+
+### L1 Regularization
+Very similar to L2, without the squared term thus it becomes lambda * abs (w).
+Leads most of the weights to be sparse as opposed to diffuse. This means that you are 
+insensitive to "noisy" inputs.
+
+### Max Norm Constraints
+You set some upper bound on the magnitude of your weights, this is typically on the order 
+of 3 or 4. After performing your regular parameter you clamp the weight vector according to
+||w||_2 less_than c
+
+### Dropout
+While training, just keep a neuron active with some probability p (a hyperparameter) or set to 
+zero otherwise. No dropout is applied during testing.
+See webpage for very simple implementation.
