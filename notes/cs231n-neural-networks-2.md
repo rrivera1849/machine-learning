@@ -112,3 +112,15 @@ of 3 or 4. After performing your regular parameter you clamp the weight vector a
 While training, just keep a neuron active with some probability p (a hyperparameter) or set to 
 zero otherwise. No dropout is applied during testing.
 See webpage for very simple implementation.
+
+## Loss Functions
+For classification we can use a Softmax classifier with the cross-entropy loss or the SVM hinge loss.
+There is a paper in the directory showing some performance increases with the L2-SVM loss.
+Hierarchical Softmax can be used for a large number of classes e.g. something like ImageNet that has 
+22k categories.
+
+There are also loss functions for Attribute classification. An example of a use-case is instagram 
+hashtags, see page for more information.
+
+For regression the absolute value of each real and predicted value is taken. Make sure that the task needs
+to be a regression problem and can't be divided into bins.
