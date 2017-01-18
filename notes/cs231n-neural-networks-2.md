@@ -23,6 +23,8 @@ Two common ways:
 - Normalize to interval [-1,1] Only apply this if you have a reason to believe that different input 
   features have different scales but should be of approximately equal importance for the learning algorithm
 
+`Xscaled = Ymin + (Ymax - Ymin) * ( (X - Xmin) / (Xmax - Xmin) )`
+
 ### PCA
 The goal of PCA is to reduce the dimensionality of the data to include only those values which contain 
 the highest variance.
