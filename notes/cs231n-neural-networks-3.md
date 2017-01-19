@@ -71,7 +71,8 @@ Plot in terms of EPOCHS. Epochs are the amount of times that your full dataset h
 which are a function of your batch size.
 
 ### Loss vs Epoch Plot
-First good plot is epoch vs loss. Loss should monotonically decrease if you use the entire dataset.
+First good plot is epoch vs loss. Loss should monotonically decrease if you use the entire dataset and no 
+momentum or similar things are used in update.
 
 ### Train/Val Accuracy vs Epoch Plot
 Plot training and validation accuracy, this should give you good insight on whether you're overfitting or not.
@@ -90,4 +91,18 @@ print update_scale / param_scale # want ~1e-3
 Plot Activation / Gradient histograms for all layers of the networks, you should see the values 
 distributed well accross the activation function. They should not be stuck in a few values e.g. -1 and 1.
 
+## Parameter updates
+
+### Vanilla Update
+```
+# Vanilla update
+x += - learning_rate * dx
+```
+
+### Momentum Update
+With the momentum update, the parameter vector will build up velocity in a direction that is consistent with the 
+gradient. The hyperparameter passed is analogous to friction, thus the higher the slower the velocity increases.
+
+### Nesterov Momentum
+Slightly different version from regular momentum that enjoys better convergence.
 
