@@ -187,3 +187,12 @@ In practice random-search performs much better.
 ## Evaluation
 
 ### Model Ensembles
+A combination of different NNet models, the prediction is averaged out. The performance typically monotonically 
+increases.
+
+- Same model, different initializations
+- Top models discovered during cross-validation
+- Different checkpoints of a single model
+- Running average of parameters during training
+
+For more information, look at the notes.
