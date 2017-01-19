@@ -106,3 +106,84 @@ gradient. The hyperparameter passed is analogous to friction, thus the higher th
 ### Nesterov Momentum
 Slightly different version from regular momentum that enjoys better convergence.
 
+### Annealing Learning Rate
+- Step decay: Reduce the learning rate by some factor every few epochs. Typical values might be reducing the learning rate by a half every 5 epochs, or by 0.1 every 20 epochs. These numbers depend heavily on the type of problem and the model. One heuristic you may see in practice is to watch the validation error while training with a fixed learning rate, and reduce the learning rate by a constant (e.g. 0.5) whenever the validation error stops improving.
+- Exponential decay. has the mathematical form α=α0e−ktα=α0e−kt, where α0,kα0,k are hyperparameters and tt is the iteration number (but you can also use units of epochs).
+- 1/t decay has the mathematical form α=α0/(1+kt)α=α0/(1+kt) where a0,ka0,k are hyperparameters and tt is the iteration number.
+
+### Second order methods
+This is basically Newton's Method, problem is that inverting a hessian of 1million parameters is extremely difficult.
+Acutally, it's infeaseable.
+There are quasi-newton methods such as [LBFGS](https://en.wikipedia.org/wiki/Limited-memory_BFGS)
+The huge downside is that it needs to loop over the entire training data thus it can't operate in batches like G.D.
+
+### Per-parameter adaptive learning rate methods
+AdaGrad:
+```
+# Assume the gradient dx and parameter vector x
+cache += dx**2
+x += - learning_rate * dx / (np.sqrt(cache) + eps)
+```
+
+Essentially the cache variable has the same size of the gradient and keeps all squared sum of the derivatives.
+Epsilon is usually between 1e-4 to 1e-8. Weights with smaller updates have their learning rate increased, the converse 
+is true.
+
+RMSPROP:
+```
+cache = decay_rate * cache + (1 - decay_rate) * dx**2
+x += - learning_rate * dx / (np.sqrt(cache) + eps)
+```
+
+A modification on AdaGrad that uses a moving average of the squared gradients and a decay rate.
+Just like AdaGrad, updates are not monotonically decreasing.
+
+Adam:
+```
+m = beta1*m + (1-beta1)*dx
+v = beta2*v + (1-beta2)*(dx**2)
+x += - learning_rate * m / (np.sqrt(v) + eps)
+```
+
+It is exactly like RMSPROP but we use the smoothed version of the gradient m. We also combine this 
+idea with momentum. Recommended values are eps = 1e-8, beta1 = 0.9, beta2 = 0.999.
+
+## Hyperparameter optimization
+These are techniques on finding the best hyperparameters, this also includes how one should implement their 
+system.
+
+### Implementation
+Two main components:
+- Worker = continually samples random hyperparameters and performs optimization, checkpoints every time
+- Master = launches and kills workers accross the computing workstation
+
+### Prefer one validation fold to cross-validation
+Self-explainatory
+
+### Hyperparameter ranges
+Search for hyperparameters in a log scale for example:
+
+`learning_rate = 10 ** uniform (-6, 1)`
+
+### Prefer random search to grid search
+Self explainatory, paper in repo.
+
+### Careful with best values on border
+If you search for a parameter, such as learning rate along some interval as below.
+
+`learning_rate = 10 ** uniform (-6, 1)`
+
+Make sure that the best value is not at the end of one of the intervals, if it is then 
+extend your interval along the appropiate direction.
+
+### Stage your search from coarse to fine
+Start with coarse ranges and low epochs e.g. 1 epoch. Then move on to finer-grained ranges 
+and higher epochs e.g. 5,10,15.
+
+### Bayesian Hyperparameter Optimization
+Just some more methods for hyperparameter optimization, these methods aren't well understood yet. 
+In practice random-search performs much better.
+
+## Evaluation
+
+### Model Ensembles
