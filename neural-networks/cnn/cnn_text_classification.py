@@ -12,7 +12,7 @@ class TextCNN (object):
         [EMBEDDING] -> [CONVOLUTIONAL] -> [MAX_POOL] -> [SOFTMAX]
     """
     
-    def __init__ (self, sequence_length, num_classes,                   vocab_size, embedding_size, filter_sizes, num_filters):
+    def __init__ (self, sequence_length, num_classes, vocab_size, embedding_size, filter_sizes, num_filters):
         """Initializes the model.
         
         Keyword Arguments:
@@ -100,6 +100,12 @@ class TextCNN (object):
                 # Apply some non-linearity to our convolution
                 h = tf.nn.relu (tf.nn.bias_add (conv, b), name="relu")
                 
+                # Apply the max-pool operation to each filter.
+                #
+                # Our original dimensions for filter were [filter_size, embedding_size, 1, num_filters]
+                # For each filter ([1) we acquire a sequence_length - filter_size + 1 size convolution
+                # Which is aplied to each channel, for each of the filters. 
+                # Thus we get the dimensions [1, sequence_length - filter_size + 1, 1, 1]
                 pooled = tf.nn.max_pool (
                     h,
                     ksize = [1, sequence_length - filter_size + 1, 1, 1],
