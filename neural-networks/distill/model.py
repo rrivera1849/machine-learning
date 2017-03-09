@@ -20,7 +20,6 @@ class Model(object):
     """
     self.input_x = tf.placeholder(tf.float32, shape = [None, 784], name = "input_x")
     self.input_y = tf.placeholder(tf.int32, shape = [None, 10], name = "input_y")
-
     self.dropout_keep_prob = tf.placeholder(tf.float32, name="dropout_keep_prob")
 
     with tf.name_scope("local_1") as scope:
@@ -29,8 +28,8 @@ class Model(object):
       pre_activation = tf.add(tf.matmul(self.input_x, W), b, name="pre_activation")
       self.local1 = tf.nn.relu(pre_activation, name="local1")
 
-    # with tf.name_scope("dropout_1") as scope:
-      # self.local1 = tf.nn.dropout(self.local1, self.dropout_keep_prob)
+    with tf.name_scope("dropout_1") as scope:
+      self.local1 = tf.nn.dropout(self.local1, self.dropout_keep_prob)
 
     with tf.name_scope("local_2") as scope:
       W = tf.Variable(tf.truncated_normal(shape = [hlength, hlength], stddev=0.1), name = "W")
@@ -38,8 +37,8 @@ class Model(object):
       pre_activation = tf.add(tf.matmul(self.local1, W), b, name="pre_activation")
       self.local2 = tf.nn.relu(pre_activation)
 
-    # with tf.name_scope("dropout_2") as scope:
-      # self.local2 = tf.nn.dropout(self.local2, self.dropout_keep_prob)
+    with tf.name_scope("dropout_2") as scope:
+      self.local2 = tf.nn.dropout(self.local2, self.dropout_keep_prob)
 
     with tf.name_scope("output") as scope:
       W = tf.Variable(tf.truncated_normal(shape = [hlength, 10], stddev=0.1), name="W")

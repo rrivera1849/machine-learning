@@ -17,7 +17,7 @@ from sklearn.datasets import fetch_mldata
 from model import Model
 
 np.random.seed(int(time()))
-DROPOUT_KEEP_PROB = 0.5
+DROPOUT_KEEP_PROB = 1
 
 if not os.path.isdir('./data'):
   os.makedirs('./data')
@@ -71,7 +71,8 @@ with tf.Graph().as_default():
 
     mentor_model = Model(600)
 
-    optimizer = tf.train.AdamOptimizer(1e-3)
+    learning_rate = tf.train.inverse_time_decay(0.001, global_step, 200, 0.5)
+    optimizer = tf.train.GradientDescentOptimizer(learning_rate)
     grads_and_vars = optimizer.compute_gradients(mentor_model.loss)
     train_op = optimizer.apply_gradients(grads_and_vars, global_step=global_step)
 
@@ -94,7 +95,7 @@ with tf.Graph().as_default():
       feed_dict = {
           mentor_model.input_x: X_batch,
           mentor_model.input_y: y_batch,
-          mentor_model.dropout_keep_prob: DROPOUT_KEEP_PROB
+          mentor_model.dropout_keep_prob: 1
           }
 
       step, loss, accuracy = session.run (
