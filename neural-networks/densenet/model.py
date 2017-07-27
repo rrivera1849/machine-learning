@@ -1,7 +1,7 @@
 
+import math
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 class DenseNetLayer(nn.Module):
   def __init__(self, in_channels, out_channels):
@@ -66,3 +66,58 @@ class DenseNetBlock(nn.Module):
 
   def forward(self, x):
     return self.dense_block(x)
+
+class DenseNetBC(nn.Module):
+  def __init__(self, num_classes=10, l=100, k=12, theta=0.5):
+    super(DenseNetBC, self).__init__()
+
+    num_block_layers = (l - 1 - 3) / 4
+    num_block_layers /= 2
+    block = DenseNetBottleneckLayer
+
+    self.init_conv = nn.Conv2d(3, 2*k, kernel_size=3, stride=1, padding=1, bias=True)
+
+    self.block1 = DenseNetBlock(block, num_block_layers, 2*k, k)
+    in_channels = 2*k + num_block_layers * k
+    out_channels = int(math.floor(in_channels * theta))
+    self.transition1 = DenseNetTransitionLayer(in_channels, out_channels)
+    in_channels = out_channels
+
+    self.block2 = DenseNetBlock(block, num_block_layers, in_channels, k)
+    in_channels = in_channels + num_block_layers * k
+    out_channels = int(math.floor(in_channels * theta))
+    self.transition2 = DenseNetTransitionLayer(in_channels, out_channels)
+    in_channels = out_channels
+
+    self.block3 = DenseNetBlock(block, num_block_layers, in_channels, k)
+    in_channels = in_channels + num_block_layers * k
+    out_channels = int(math.floor(in_channels * theta))
+    self.transition3 = DenseNetTransitionLayer(in_channels, out_channels)
+    in_channels = out_channels
+
+    self.avgpool = nn.AvgPool2d(8)
+    self.classifier = nn.Linear(in_channels, num_classes)
+
+    for m in self.modules():
+      if isinstance(m, nn.Conv2d):
+        n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
+        m.weight.data.normal_(0, math.sqrt(2.0 / n))
+        m.bias.data.zero_()
+      elif isinstance(m, nn.BatchNorm2d):
+        m.weight.data.fill_(1)
+        m.bias.data.zero_()
+      elif isinstance(m, nn.Linear):
+        m.bias.data.zero_()
+
+  def forward(self, x):
+    out = self.init_conv(x)
+    out = self.block1(x)
+    out = self.transition1(x)
+    out = self.block2(x)
+    out = self.transition2(x)
+    out = self.block3(x)
+    out = self.transition3(x)
+    out = self.avgpool(out)
+    out = self.classifier(out.view(out.size()[0], -1))
+
+    return out
