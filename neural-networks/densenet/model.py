@@ -11,7 +11,6 @@ class DenseNetLayer(nn.Module):
     self.relu = nn.ReLU(inplace=True)
     self.conv = nn.Conv2d(in_channels, out_channels, kernel_size=3, 
                           stride=1, padding=1, bias=True)
-    pass
 
   def forward(self, x):
     out = self.conv(self.relu(self.bn(x)))
