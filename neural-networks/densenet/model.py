@@ -35,7 +35,7 @@ class DenseNetBottleneckLayer(nn.Module):
     self.conv2 = nn.Conv2d(bottle_channels, out_channels, kernel_size=3, 
                            stride=1, padding=1, bias=True)
 
-  def forwrd(self, x):
+  def forward(self, x):
     out = self.conv1(self.relu1(self.bn1(x)))
     out = self.conv2(self.relu2(self.bn2(x)))
     out = torch.cat([x, out], 1)
