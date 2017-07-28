@@ -4,6 +4,13 @@ import torch
 import torch.nn as nn
 
 class DenseNetLayer(nn.Module):
+  """Basic DenseNet layer.
+     Applies BatchNorm -> ReLU -> Conv[3x3].
+
+  Keyword Arguments:
+    in_channels: input channels or feature maps
+    out_channels: output channels or feature maps
+  """
   def __init__(self, in_channels, out_channels):
     super(DenseNetLayer, self).__init__()
 
@@ -19,6 +26,18 @@ class DenseNetLayer(nn.Module):
     return out
 
 class DenseNetBottleneckLayer(nn.Module):
+  """Applies a BottleNeck operation prior to the regular
+     DenseNetLayer operation.
+
+     BatchNorm -> ReLU -> Conv[1x1] ->
+     BatchNorm -> ReLU -> Conv[3x3]
+
+     The 1x1 convolution transforms the input to size 4*k
+
+  Keyword Arguments:
+    in_channels: input channels or feature maps
+    out_channels: output channels or feature maps
+  """
   def __init__(self, in_channels, out_channels):
     super(DenseNetBottleneckLayer, self).__init__()
 
@@ -42,6 +61,16 @@ class DenseNetBottleneckLayer(nn.Module):
     return out
 
 class DenseNetTransitionLayer(nn.Module):
+  """Transition between DenseNetBlocks.
+     Applies BatchNorm -> Conv[1x1] -> AvgPool
+
+     The 1x1 convolution usually reduces the number of feature
+     maps according to some parameter theta.
+
+  Keyword Arguments:
+    in_channels: input channels or feature maps
+    out_channels: output channels or feature maps
+  """
   def __init__(self, in_channels, out_channels):
     super(DenseNetTransitionLayer, self).__init__()
 
@@ -56,6 +85,16 @@ class DenseNetTransitionLayer(nn.Module):
     return out
 
 class DenseNetBlock(nn.Module):
+  """A set of DenseNet block layers.
+     This is a helper to easily construct models.
+
+  Keyword Arguments:
+    block: class representative of a DenseNetLayer
+    num_layers: number of layers to create in this block
+    in_channels: number of channels or feature maps of the
+                 first input image
+    k: growth rate for the feature maps
+  """
   def __init__(self, block, num_layers, in_channels, k):
     super(DenseNetBlock, self).__init__()
 
@@ -69,6 +108,9 @@ class DenseNetBlock(nn.Module):
     return self.dense_block(x)
 
 class DenseNetBC(nn.Module):
+  """This is the DenseNetBC-100 k=12 which was applied to
+     CIFAR-10 in the paper. 
+  """
   def __init__(self, num_classes=10, l=100, k=12, theta=0.5):
     super(DenseNetBC, self).__init__()
 
