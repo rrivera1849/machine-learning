@@ -1,6 +1,7 @@
 .DS_Store
 neural-networks/distill/data
 neural-networks/selu/data
+neural-networks/densenet/dataset
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
