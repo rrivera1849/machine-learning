@@ -38,8 +38,8 @@ def train_step(images, labels, model, optimizer, criterion):
   labels_var = Variable(labels, requires_grad=False, volatile=False)
 
   if torch.cuda.is_available:
-    images_var.cuda()
-    labels_var.cuda()
+    images_var = images_var.cuda()
+    labels_var = labels_var.cuda()
 
   scores = model(images_var)
 
@@ -68,7 +68,7 @@ def train(data_loader, model, optimizer, criterion):
       iteration += 1
 
       if iteration % print_every == 0:
-        print('Loss Iteration {} = {}'.format(iteration, print_every_loss / print_every))
+        print('Loss Iteration {} = {}'.format(iteration, print_every_loss / print_every), flush=True)
         print_every_loss = 0.0
 
 def main():
@@ -84,7 +84,7 @@ def main():
   train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True, num_workers=6)
   train(train_loader, model, optimizer, criterion)
 
-  torch.save(model.state_dict(), open('densenet-final.pth.tar', 'wb'))
+  torch.save(model.state_dict(), open('checkpoints/densenet-final.pth.tar', 'wb'))
 
 if __name__ == "__main__":
   main()
