@@ -81,7 +81,7 @@ def main():
   if torch.cuda.is_available:
     model.cuda()
 
-  train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True, num_workers=6)
+  train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True, num_workers=8)
   train(train_loader, model, optimizer, criterion)
 
   torch.save(model.state_dict(), open('checkpoints/densenet-final.pth.tar', 'wb'))

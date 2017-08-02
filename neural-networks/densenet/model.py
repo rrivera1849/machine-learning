@@ -114,8 +114,7 @@ class DenseNetBC(nn.Module):
   def __init__(self, num_classes=10, l=100, k=12, theta=0.5):
     super(DenseNetBC, self).__init__()
 
-    num_block_layers = (l - 1 - 3) / 4
-    num_block_layers = int(num_block_layers / 2)
+    num_block_layers = int((l - 1 - 3) / 3)
     block = DenseNetBottleneckLayer
 
     self.init_conv = nn.Conv2d(3, 2*k, kernel_size=3, stride=1, padding=1, bias=True)

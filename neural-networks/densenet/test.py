@@ -63,7 +63,7 @@ def main():
   if torch.cuda.is_available:
     model.cuda()
 
-  test_loader = DataLoader(test_dataset, batch_size=64, num_workers=6)
+  test_loader = DataLoader(test_dataset, batch_size=64, num_workers=8)
   test(test_loader, model)
 
 if __name__ == "__main__":
