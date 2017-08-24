@@ -12,6 +12,7 @@ with the current implementations as well.
 ## Papers Read
 
 ### 2017
+- A Brief Survey of Deep Reinforcement Learning
 - A Deep Convolutional Auto-Encoder with Pooling Unpooling Layers in Caffe
 - A Few Useful Things to Know About Machine Learning
 - CS231n Notes
